@@ -1,8 +1,8 @@
-#从蛇吃老鼠来聊聊 .Net Core中配置文件的ReloadOnChange
+# 从蛇吃老鼠来聊聊 .Net Core中配置文件的ReloadOnChange
 
 ## Pre
 
-很早在看 Jesse 的[Asp.net Core快速入门](http://video.jessetalk.cn/course/4)的课程的时候就了解到了在Asp .net core中,如果添加的Json配置被更改了,是支持自动同步更新配置的,作为一名有着严重"造轮子"情节的程序员,最近在折腾一个博客系统,也想造出一个这样能自动更新并Mysql中读取数据的ConfigureSource,所以点开了AddJsonFile这个拓展函数的源码,发现别有洞天,蛮有意思,本篇文章中不去讨论我我造Mysql配置源的过程,就来聊一聊,现有的ReloadOnChange是如何实现的,在学习ReloadOnChange的过程中,我们会把Configuration也顺带撩一把😈.  
+很早在看 Jesse 的[Asp.net Core快速入门](http://video.jessetalk.cn/course/4)的课程的时候就了解到了在Asp .net core中,如果添加的Json配置被更改了,是支持自动重载配置的,作为一名有着严重"造轮子"情节的程序员,最近在折腾一个博客系统,也想造出一个这样能自动更新并Mysql中读取数据的ConfigureSource,所以点开了AddJsonFile这个拓展函数的源码,发现别有洞天,蛮有意思,本篇文章中不去讨论我我造Mysql配置源的过程,单纯地聊一聊现有的ReloadOnChange是如何实现的,在学习ReloadOnChange的过程中,我们会把Configuration也顺带撩一把😁.  
 至于标题为什么是🐍吃🐀,看完这篇文章你就知道了.  
 
 ``` c#
