@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Threading;
 using Microsoft.Extensions.Primitives;
 
-namespace MiniConfiguration
+namespace ChangeTokenPrinciple
 {
     /// <summary>
     /// Propagates notifications that a change has occurred.

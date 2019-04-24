@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.FileProviders;
 
-namespace MiniConfiguration
+namespace ChangeTokenPrinciple
 {
     class Program
     {
