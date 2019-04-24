@@ -8,27 +8,10 @@ namespace ChangeTokenPrinciple
     /// </summary>
     public static class ChangeToken
     {
-        /// <summary>
-        /// Registers the <paramref name="changeTokenConsumer"/> action to be called whenever the token produced changes.
-        /// </summary>
-        /// <param name="changeTokenProducer">Produces the change token.</param>
-        /// <param name="changeTokenConsumer">Action called when the token changes.</param>
-        /// <returns></returns>
         public static ChangeTokenRegistration<Action> OnChange(Func<IChangeToken> changeTokenProducer, Action changeTokenConsumer)
         {
-            if (changeTokenProducer == null)
-            {
-                throw new ArgumentNullException(nameof(changeTokenProducer));
-            }
-            if (changeTokenConsumer == null)
-            {
-                throw new ArgumentNullException(nameof(changeTokenConsumer));
-            }
-
             return new ChangeTokenRegistration<Action>(changeTokenProducer, callback => callback(), changeTokenConsumer);
         }
-
-
     }
     public class ChangeTokenRegistration<TAction>
     {
