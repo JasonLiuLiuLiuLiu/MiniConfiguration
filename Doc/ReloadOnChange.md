@@ -350,4 +350,32 @@ IChangeToken的重点在于里面有个RegisterChangeCallback方法,🐍吃🐀�
 
 ![Result](../Pic/test2.gif)
 
-可以看到,只要被监控的目录发生了文件变化,不管是新建文件,还是修改了文件内的内容,都会触发回调函数,其实JsonConfig中,这个回调函数就是Load()函数进行重新加载数据,可也就是为什么Json的配置一旦更新,系统就会自动重载.
+可以看到,只要被监控的目录发生了文件变化,不管是新建文件,还是修改了文件内的内容,都会触发回调函数,其实JsonConfig中,这个回调函数就是Load(),它负责重新加载数据,可也就是为什么Asp .net core中如果把ReloadOnchang设置为true后,Json的配置一旦更新,配置就会自动重载.
+
+##  PhysicalFilesWatcher
+
+那么,为什么文件一旦变化,就会触发ChangeToken的回调函数呢? 其实`PhysicalFileProvider`中调用了`PhysicalFilesWatcher`对文件系统进行监视,观察PhysicalFilesWatcher的构造函数,可以看到`PhysicalFilesWatcher`需要传入`FileSystemWatcher`,`FileSystemWatcher`是`system.io`下的底层接类,在构造函数中给这个Watcher的Created,Changed,Renamed,Deleted注册EventHandler事件,最终,在这些EventHandler中会调用ChangToken的回调函数.
+
+``` c#
+    public PhysicalFilesWatcher(string root,FileSystemWatcher fileSystemWatcher,bool pollForChanges,ExclusionFilters filters)
+    {
+      this._root = root;
+      this._fileWatcher = fileSystemWatcher;
+      this._fileWatcher.IncludeSubdirectories = true;
+      this._fileWatcher.Created += new FileSystemEventHandler(this.OnChanged);
+      this._fileWatcher.Changed += new FileSystemEventHandler(this.OnChanged);
+      this._fileWatcher.Renamed += new RenamedEventHandler(this.OnRenamed);
+      this._fileWatcher.Deleted += new FileSystemEventHandler(this.OnChanged);
+      this._fileWatcher.Error += new ErrorEventHandler(this.OnError);
+      this.PollForChanges = pollForChanges;
+      this._filters = filters;
+      this.PollingChangeTokens = new ConcurrentDictionary<IPollingChangeToken, IPollingChangeToken>();
+      this._timerFactory = (Func<Timer>) (() => NonCapturingTimer.Create(new TimerCallback(PhysicalFilesWatcher.RaiseChangeEvents), (object) this.PollingChangeTokens, TimeSpan.Zero, PhysicalFilesWatcher.DefaultPollingInterval));
+    }
+```
+
+蒋金楠老师有一篇优秀的文章介绍`FileProvider`,有兴趣的可以看一下https://www.cnblogs.com/artech/p/net-core-file-provider-02.html.
+
+最后,我么把用到的一些方法和类捋一捋.
+
+
