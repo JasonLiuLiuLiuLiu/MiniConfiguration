@@ -272,5 +272,82 @@ IChangeToken的重点在于里面有个RegisterChangeCallback方法,🐍吃🐀�
 
 这是运行结果
 ![Result](../Pic/test1.gif)
-可以看到,一旦在监听的目录下创建文件,立即触发了执行回调函数,但是如果我们继续手动地更改监听目录中的文件,回调函数就不再执行了.
+可以看到,一旦在监听的目录下创建文件,立即触发了执行回调函数,但是如果我们继续手动地更改(复制)监听目录中的文件,回调函数就不再执行了.
 
+这是因为changeToken监听到文件变更并触发回调函数后,这个changeToken的使命也就完成了,要想保持一直监听,那么我们就在在回调函数中重新获取token,并给新的token的回调函数注册通用的事件,这样就能保持一直监听下去了.
+这也就是ChangeToken.Onchange所作的事情,我们看一下源码.
+
+``` c#
+   public static class ChangeToken
+    {
+        public static ChangeTokenRegistration<Action> OnChange(Func<IChangeToken> changeTokenProducer, Action changeTokenConsumer)
+        {
+            return new ChangeTokenRegistration<Action>(changeTokenProducer, callback => callback(), changeTokenConsumer);
+        }
+    }
+    public class ChangeTokenRegistration<TAction>
+    {
+        private readonly Func<IChangeToken> _changeTokenProducer;
+        private readonly Action<TAction> _changeTokenConsumer;
+        private readonly TAction _state;
+
+        public ChangeTokenRegistration(Func<IChangeToken> changeTokenProducer, Action<TAction> changeTokenConsumer, TAction state)
+        {
+            _changeTokenProducer = changeTokenProducer;
+            _changeTokenConsumer = changeTokenConsumer;
+            _state = state;
+
+            var token = changeTokenProducer();
+
+            RegisterChangeTokenCallback(token);
+        }
+
+        private void RegisterChangeTokenCallback(IChangeToken token)
+        {
+            token.RegisterChangeCallback(_ => OnChangeTokenFired(), this);
+        }
+
+        private void OnChangeTokenFired()
+        {
+            var token = _changeTokenProducer();
+
+            try
+            {
+                _changeTokenConsumer(_state);
+            }
+            finally
+            {
+                // We always want to ensure the callback is registered
+                RegisterChangeTokenCallback(token);
+            }
+        }
+    }
+```
+
+简单来说,就是给token注册了一个`OnChangeTokenFired`的回调函数,仔细看看`OnChangeTokenFired`里做了什么,总体来说三步.
+
+1. 获取一个新的token.
+2. 调用消费者进行消费.
+3. 给新获取的token再次注册一个`OnChangeTokenFired`的回调函数.
+
+如此周而复始~~
+
+### 实验2
+
+既然知道了OnChange的工作方式,那么我们把实验1的代码修改一下.
+
+``` c#
+        static void Main()
+        {
+            var phyFileProvider = new PhysicalFileProvider("C:\\Users\\liuzh\\MyBox\\TestSpace");
+            ChangeToken.OnChange(() => phyFileProvider.Watch("*.*"),
+                () => { Console.WriteLine("老鼠被蛇吃"); });
+            Console.ReadKey();
+        }
+```
+
+执行效果看一下
+
+![Result](../Pic/test2.gif)
+
+可以看到,只要被监控的目录发生了文件变化,不管是新建文件,还是修改了文件内的内容,都会触发回调函数,其实JsonConfig中,这个回调函数就是Load()函数进行重新加载数据,可也就是为什么Json的配置一旦更新,系统就会自动重载.
