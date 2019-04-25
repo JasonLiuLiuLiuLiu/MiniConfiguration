@@ -2,8 +2,7 @@
 
 ## Pre
 
-很早在看 Jesse 的[Asp.net Core快速入门](http://video.jessetalk.cn/course/4)的课程的时候就了解到了在Asp .net core中,如果添加的Json配置被更改了,是支持自动重载配置的,作为一名有着严重"造轮子"情节的程序员,最近在折腾一个博客系统,也想造出一个这样能自动更新并Mysql中读取数据的ConfigureSource,所以点开了AddJsonFile这个拓展函数的源码,发现别有洞天,蛮有意思,本篇文章中不去讨论我我造Mysql配置源的过程,单纯地聊一聊现有的ReloadOnChange是如何实现的,在学习ReloadOnChange的过程中,我们会把Configuration也顺带撩一把😁.  
-至于标题为什么是🐍吃🐀,看完这篇文章你就知道了.  
+很早在看 Jesse 的[Asp.net Core快速入门](http://video.jessetalk.cn/course/4)的课程的时候就了解到了在Asp .net core中,如果添加的Json配置被更改了,是支持自动重载配置的,作为一名有着严重"造轮子"情节的程序员,最近在折腾一个博客系统,也想造出一个这样能自动更新并Mysql中读取数据的ConfigureSource,所以点开了AddJsonFile这个拓展函数的源码,发现别有洞天,蛮有意思,本篇文章就简单地聊一聊Json config的ReloadOnChange是如何实现的,在学习ReloadOnChange的过程中,我们会把Configuration也顺带撩一把😁,希望对小伙伴们有所帮助.
 
 ``` c#
  public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
@@ -271,4 +270,7 @@ IChangeToken的重点在于里面有个RegisterChangeCallback方法,🐍吃🐀�
         }
 ```
 
-![Result](../Pic/1.png)
+这是运行结果
+![Result](../Pic/test1.gif)
+可以看到,一旦在监听的目录下创建文件,立即触发了执行回调函数,但是如果我们继续手动地更改监听目录中的文件,回调函数就不再执行了.
+
