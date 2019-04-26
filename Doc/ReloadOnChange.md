@@ -1,4 +1,4 @@
-# 从蛇吃老鼠来聊聊 .Net Core中配置文件的ReloadOnChange
+# 浅析 .Net Core中配置文件的ReloadOnChange
 
 ## Pre
 
@@ -267,7 +267,7 @@ IChangeToken的重点在于里面有个RegisterChangeCallback方法,🐍吃🐀�
 ```
 
 这是运行结果
-![Result](../Pic/test1.gif)
+![Result](https://raw.githubusercontent.com/liuzhenyulive/MiniConfiguration/master/Pic/test1.gif)
 可以看到,一旦在监听的目录下创建文件,立即触发了执行回调函数,但是如果我们继续手动地更改(复制)监听目录中的文件,回调函数就不再执行了.
 
 这是因为changeToken监听到文件变更并触发回调函数后,这个changeToken的使命也就完成了,要想保持一直监听,那么我们就在在回调函数中重新获取token,并给新的token的回调函数注册通用的事件,这样就能保持一直监听下去了.
@@ -344,7 +344,7 @@ IChangeToken的重点在于里面有个RegisterChangeCallback方法,🐍吃🐀�
 
 执行效果看一下
 
-![Result](../Pic/test2.gif)
+![Result](https://raw.githubusercontent.com/liuzhenyulive/MiniConfiguration/master/Pic/test2.gif)
 
 可以看到,只要被监控的目录发生了文件变化,不管是新建文件,还是修改了文件内的内容,都会触发回调函数,其实JsonConfig中,这个回调函数就是Load(),它负责重新加载数据,可也就是为什么Asp .net core中如果把ReloadOnchang设置为true后,Json的配置一旦更新,配置就会自动重载.
 
