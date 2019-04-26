@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniConfiguration", "MiniConfiguration\MiniConfiguration.csproj", "{7D51CA36-9532-4025-B2CD-B1DB2AAEA3B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChangeTokenPrinciple", "MiniConfiguration\ChangeTokenPrinciple.csproj", "{7D51CA36-9532-4025-B2CD-B1DB2AAEA3B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{A0D5D5A6-66D1-48EC-80FD-01ED5259AF4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{7D51CA36-9532-4025-B2CD-B1DB2AAEA3B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D51CA36-9532-4025-B2CD-B1DB2AAEA3B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D51CA36-9532-4025-B2CD-B1DB2AAEA3B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0D5D5A6-66D1-48EC-80FD-01ED5259AF4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0D5D5A6-66D1-48EC-80FD-01ED5259AF4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0D5D5A6-66D1-48EC-80FD-01ED5259AF4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0D5D5A6-66D1-48EC-80FD-01ED5259AF4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
